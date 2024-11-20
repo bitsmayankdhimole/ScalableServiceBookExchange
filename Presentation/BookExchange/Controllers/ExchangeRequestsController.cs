@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Domain.Entities;
-using Domain.Entities.Exchange;
+using Application.UseCases.Exchange;
+using BookExchange.Models;
 
 namespace BookExchange.Controllers
 {
@@ -8,31 +9,45 @@ namespace BookExchange.Controllers
     [Route("api/[controller]")]
     public class ExchangeRequestsController : Controller
     {
-        private readonly IExchangeRequestRepository _exchangeRequestRepository;
+        private readonly IExchangeRequestService _exchangeRequestService;
 
-        public ExchangeRequestsController(IExchangeRequestRepository exchangeRequestRepository)
+        public ExchangeRequestsController(IExchangeRequestService exchangeRequestService)
         {
-            _exchangeRequestRepository = exchangeRequestRepository;
+            _exchangeRequestService = exchangeRequestService;
         }
 
         // POST: api/exchange-requests
         [HttpPost]
-        public async Task<IActionResult> CreateExchangeRequest([FromBody] ExchangeRequest exchangeRequest)
+        public async Task<IActionResult> CreateExchangeRequest([FromBody] CreateExchangeRequest exchangeRequest)
         {
             if (exchangeRequest == null)
             {
                 return BadRequest();
             }
 
-            await _exchangeRequestRepository.AddAsync(exchangeRequest);
-            return CreatedAtAction(nameof(GetExchangeRequestById), new { requestId = exchangeRequest.RequestId }, exchangeRequest);
+            var domainExchangeRequest = new ExchangeRequest
+            {
+                RequestTypeId = exchangeRequest.RequestTypeId,
+                SenderBookId = exchangeRequest.SenderBookId,
+                ReceiverBookId = exchangeRequest.ReceiverBookId,
+                SenderUserId = exchangeRequest.SenderUserId,
+                ReceiverUserId = exchangeRequest.ReceiverUserId,
+                DeliveryMethodId = exchangeRequest.DeliveryMethodId,
+                ExchangeDuration = exchangeRequest.ExchangeDuration,
+                PaymentMethodId = exchangeRequest.PaymentMethodId,
+                StatusId = exchangeRequest.StatusId
+            };
+
+            int requestId = await _exchangeRequestService.AddExchangeRequestAsync(domainExchangeRequest);
+            domainExchangeRequest.RequestId = requestId;
+            return CreatedAtAction(nameof(GetExchangeRequestById), new { requestId = requestId }, domainExchangeRequest);
         }
 
         // GET: api/exchange-requests/{requestId}
         [HttpGet("{requestId}")]
-        public async Task<IActionResult> GetExchangeRequestById(string requestId)
+        public async Task<IActionResult> GetExchangeRequestById(int requestId)
         {
-            var exchangeRequest = await _exchangeRequestRepository.GetByIdAsync(requestId);
+            var exchangeRequest = await _exchangeRequestService.GetExchangeRequestByIdAsync(requestId);
             if (exchangeRequest == null)
             {
                 return NotFound();
@@ -43,28 +58,42 @@ namespace BookExchange.Controllers
 
         // GET: api/exchange-requests
         [HttpGet]
-        public async Task<IActionResult> GetAllExchangeRequests()
+        public async Task<IActionResult> GetAllExchangeRequests(int userId)
         {
-            var exchangeRequests = await _exchangeRequestRepository.GetAllAsync();
+            var exchangeRequests = await _exchangeRequestService.GetExchangeRequestsByUserIdAsync(userId);
             return Ok(exchangeRequests);
         }
 
         // PUT: api/exchange-requests/{requestId}
         [HttpPut("{requestId}")]
-        public async Task<IActionResult> UpdateExchangeRequest(string requestId, [FromBody] ExchangeRequest exchangeRequest)
+        public async Task<IActionResult> UpdateExchangeRequest(int requestId, [FromBody] UpdateExchangeRequest exchangeRequest)
         {
-            if (exchangeRequest == null || requestId != exchangeRequest.RequestId)
+            if (exchangeRequest == null || requestId < 1)
             {
                 return BadRequest();
             }
 
-            var existingRequest = await _exchangeRequestRepository.GetByIdAsync(requestId);
+            var existingRequest = await _exchangeRequestService.GetExchangeRequestByIdAsync(requestId);
             if (existingRequest == null)
             {
                 return NotFound();
             }
 
-            await _exchangeRequestRepository.UpdateAsync(exchangeRequest);
+            var domainExchangeRequest = new ExchangeRequest
+            {
+                RequestId = requestId,
+                RequestTypeId = exchangeRequest.RequestTypeId,
+                SenderBookId = exchangeRequest.SenderBookId,
+                ReceiverBookId = exchangeRequest.ReceiverBookId,
+                SenderUserId = exchangeRequest.SenderUserId,
+                ReceiverUserId = exchangeRequest.ReceiverUserId,
+                DeliveryMethodId = exchangeRequest.DeliveryMethodId,
+                ExchangeDuration = exchangeRequest.ExchangeDuration,
+                PaymentMethodId = exchangeRequest.PaymentMethodId,
+                StatusId = exchangeRequest.StatusId
+            };
+
+            await _exchangeRequestService.UpdateExchangeRequestAsync(domainExchangeRequest);
             return NoContent();
         }
     }

@@ -1,10 +1,7 @@
-﻿
-
-namespace Domain.Entities
+﻿namespace BookExchange.Models
 {
-    public class ExchangeRequest
+    public class CreateExchangeRequest
     {
-        public int RequestId { get; set; }
         public int RequestTypeId { get; set; }
         public string SenderBookId { get; set; }
         public string ReceiverBookId { get; set; }
@@ -15,5 +12,4 @@ namespace Domain.Entities
         public int PaymentMethodId { get; set; }
         public int StatusId { get; set; }
     }
-
 }

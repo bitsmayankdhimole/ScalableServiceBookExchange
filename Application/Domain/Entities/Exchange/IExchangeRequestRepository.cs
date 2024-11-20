@@ -2,9 +2,9 @@
 {
     public interface IExchangeRequestRepository
     {
-        Task<ExchangeRequest> GetByIdAsync(string requestId);
-        Task<IEnumerable<ExchangeRequest>> GetAllAsync();
-        Task AddAsync(ExchangeRequest exchangeRequest);
+        Task<ExchangeRequest> GetByIdAsync(int requestId);
+        Task<IEnumerable<ExchangeRequest>> GetAllAsync(int userId);
+        Task<int> AddAsync(ExchangeRequest exchangeRequest);
         Task UpdateAsync(ExchangeRequest exchangeRequest);
     }
 }
