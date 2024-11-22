@@ -44,7 +44,7 @@ namespace BookExchange.Controllers
         }
 
         // GET: api/exchange-requests/{requestId}
-        [HttpGet("{requestId}")]
+        [HttpGet("exchange-request/{requestId}")]
         public async Task<IActionResult> GetExchangeRequestById(int requestId)
         {
             var exchangeRequest = await _exchangeRequestService.GetExchangeRequestByIdAsync(requestId);
@@ -57,8 +57,8 @@ namespace BookExchange.Controllers
         }
 
         // GET: api/exchange-requests
-        [HttpGet]
-        public async Task<IActionResult> GetAllExchangeRequests(int userId)
+        [HttpGet("exchange-requests/{userId}")]
+        public async Task<IActionResult> GetAllExchangeRequests(string userId)
         {
             var exchangeRequests = await _exchangeRequestService.GetExchangeRequestsByUserIdAsync(userId);
             return Ok(exchangeRequests);

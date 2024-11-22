@@ -7,5 +7,6 @@ namespace Application.UseCases.Lookup
         Task<IEnumerable<LookupEntity.Lookup>> GetDeliveryMethodsAsync();
         Task<IEnumerable<LookupEntity.Lookup>> GetPaymentMethodsAsync();
         Task<IEnumerable<LookupEntity.Lookup>> GetStatusesAsync();
+        Task<IEnumerable<LookupEntity.Lookup>> GetRequestTypesAsync();
     }
 }

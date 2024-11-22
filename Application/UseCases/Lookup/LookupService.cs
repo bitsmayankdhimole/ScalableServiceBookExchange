@@ -25,5 +25,10 @@ namespace Application.UseCases.Lookup
         {
             return await _lookupRepository.GetStatusesAsync();
         }
+
+        public async Task<IEnumerable<LookupEntity.Lookup>> GetRequestTypesAsync()
+        {
+            return await _lookupRepository.GetRequestTypesAsync();
+        }
     }
 }

@@ -37,5 +37,13 @@ namespace BookExchange.Controllers
             var statuses = await _lookupService.GetStatusesAsync();
             return Ok(statuses);
         }
+
+        // GET: api/lookup/request-types
+        [HttpGet("request-types")]
+        public async Task<IActionResult> GetRequestTypes()
+        {
+            var requestTypes = await _lookupService.GetRequestTypesAsync();
+            return Ok(requestTypes);
+        }
     }
 }

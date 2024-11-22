@@ -44,5 +44,15 @@ namespace DataAccess.Repository
                     commandType: CommandType.StoredProcedure);
             }
         }
+
+        public async Task<IEnumerable<Lookup>> GetRequestTypesAsync()
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return await db.QueryAsync<Lookup>(
+                    "GetRequestTypes",
+                    commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace DataAccess.Repository
             }
         }
 
-        public async Task<IEnumerable<ExchangeRequest>> GetAllAsync(int userId)
+        public async Task<IEnumerable<ExchangeRequest>> GetAllAsync(string userId)
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {

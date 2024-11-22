@@ -19,7 +19,7 @@ namespace Application.UseCases.Exchange
             return await _exchangeRequestRepository.GetByIdAsync(requestId);
         }
 
-        public async Task<IEnumerable<ExchangeRequest>> GetExchangeRequestsByUserIdAsync(int userId)
+        public async Task<IEnumerable<ExchangeRequest>> GetExchangeRequestsByUserIdAsync(string userId)
         {
             return await _exchangeRequestRepository.GetAllAsync(userId);
         }
